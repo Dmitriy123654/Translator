@@ -220,25 +220,31 @@ namespace laba1
             List<string> possibleErrors = new List<string>();
             word = word.ToLower();
 
+
             foreach (string dictWord in dictionaryWords.Keys)
             {
                 if (word.Length == dictWord.Length)
                 {
                     // Проверка замены одной буквы
                     int mismatchCount = 0;
+                    int mismatchIndex = -1;
 
                     for (int i = 0; i < word.Length; i++)
                     {
                         if (word[i] != dictWord[i])
                         {
                             mismatchCount++;
+                            mismatchIndex = i;
                         }
                     }
 
                     if (mismatchCount == 1)
                     {
-
-                        possibleErrors.Add(dictionaryWords[dictWord]);
+                        // Проверяем, что в замененных позициях символы не поменяны местами
+                        if (word[mismatchIndex] == dictWord[mismatchIndex + 1] && word[mismatchIndex + 1] == dictWord[mismatchIndex])
+                        {
+                            possibleErrors.Add(dictionaryWords[dictWord]);
+                        }
                     }
 
                     // Проверка перестановки букв
@@ -247,7 +253,12 @@ namespace laba1
 
                     if (sortedWord.Equals(sortedDictWord, StringComparison.OrdinalIgnoreCase))
                     {
-                        possibleErrors.Add(dictionaryWords[dictWord]);
+                        var (swapsCount, nearestSymbols) = CountSwappedNeighboringCharacters(word, dictWord);
+                        if (swapsCount == 2 && nearestSymbols)
+                        {
+                            possibleErrors.Add(dictionaryWords[dictWord]);
+                        }
+                     
                     }
                 }
                 else if (Math.Abs(word.Length - dictWord.Length) == 1)
@@ -275,6 +286,7 @@ namespace laba1
                     }
                 }
             }
+            // Проверка пропущенных букв
             foreach (string dictWord in dictionaryWords.Keys)
             {
                 if (IsSimilarWord(word, dictWord))
@@ -335,51 +347,32 @@ namespace laba1
                 return shorterLength == longerLength - 1;
             }
         }
-        static Tuple<bool, bool> CheckLanguageValidity2(string word)
+        static (int,bool) CountSwappedNeighboringCharacters(string word1, string word2)
         {
-            Regex englishRegex = new Regex("^[a-zA-Z]+$");
-            Regex russianRegex = new Regex("^[а-яА-ЯёЁ]+$");
+            int count = 0;
+            bool NearestSymbols = false;
 
-            int foreignCharacterCount = 0;
-
-            if (englishRegex.IsMatch(word))
+            if (word1.Length != word2.Length)
             {
-                foreach (char c in word)
-                {
-                    if (!englishRegex.IsMatch(c.ToString()) && !russianRegex.IsMatch(c.ToString()))
-                    {
-                        foreignCharacterCount++;
-                    }
+                return (count,NearestSymbols);
+            }
 
-                    if (foreignCharacterCount > 1)
+            for (int i = 0; i < word1.Length - 1; i++)
+            {
+                if (word1[i] != word2[i])
+                {
+                    count++;
+
+                    if (count < 2 && word1[i] == word2[i + 1] && word1[i + 1] == word2[i])
                     {
-                        return Tuple.Create(false, false);
+                        NearestSymbols = true;
+                        if (word1[i] == word2[i + 1] && i + 1 == word1.Length - 1)
+                            count++;
                     }
                 }
-
-                return Tuple.Create(true, false);
             }
-            else if (russianRegex.IsMatch(word))
-            {
-                foreach (char c in word)
-                {
-                    if (!russianRegex.IsMatch(c.ToString()) && !englishRegex.IsMatch(c.ToString()))
-                    {
-                        foreignCharacterCount++;
-                    }
 
-                    if (foreignCharacterCount > 1)
-                    {
-                        return Tuple.Create(false, false);
-                    }
-                }
-
-                return Tuple.Create(true, true);
-            }
-            else
-            {
-                return Tuple.Create(false, false);
-            }
+            return (count,NearestSymbols);
         }
         static Tuple<bool, bool> CheckLanguageValidity(string inputString)
         {
