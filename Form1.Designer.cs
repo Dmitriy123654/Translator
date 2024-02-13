@@ -238,7 +238,7 @@ namespace laba1
                         }
                     }
 
-                    if (mismatchCount == 1)
+                    if (mismatchCount == 1 && mismatchIndex + 1 < word.Length)
                     {
                         // Проверяем, что в замененных позициях символы не поменяны местами
                         if (word[mismatchIndex] == dictWord[mismatchIndex + 1] && word[mismatchIndex + 1] == dictWord[mismatchIndex])
