@@ -1,22 +1,26 @@
-﻿namespace laba1
+﻿using System.Text;
+using System.Text.Json;
+
+namespace laba1
 {
     public class DataStorage
     {
-        public Dictionary<string, string> russianToEnglish = new Dictionary<string, string>();
-        public Dictionary<string, string> englishToRussian = new Dictionary<string, string>();
+        public static Dictionary<string, string> russianToEnglish = new Dictionary<string, string>();
+        public static Dictionary<string, string> englishToRussian = new Dictionary<string, string>();
 
         public DataStorage()
         {
 
-            if (russianToEnglish.Count == 0 || russianToEnglish == null)
+            /*if (russianToEnglish.Count == 0 || russianToEnglish == null)
             {
-                Initialize();
-            }
+                InitializeAsync();
+            }*/
+            CheckingJson();
         }
-        private void Initialize()
+        private async Task InitializeAsync()
         {
             // Заполнение словарей русско-английскими и англо-русскими словами
-            russianToEnglish.Add("яблоко", "apple");
+            /*russianToEnglish.Add("яблоко", "apple");
             russianToEnglish.Add("кот", "cat");
             russianToEnglish.Add("собака", "dog");
             russianToEnglish.Add("стол", "table");
@@ -75,7 +79,77 @@
             foreach (var entry in russianToEnglish)
             {
                 englishToRussian.Add(entry.Value, entry.Key);
-            }
+            }*/
+
+            /*JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
+            string russianJson = JsonSerializer.Serialize(russianToEnglish, options);
+            string englishJson = JsonSerializer.Serialize(englishToRussian, options);
+
+            File.WriteAllText("russianToEnglish.json", russianJson, Encoding.UTF8);
+            File.WriteAllText("englishToRussian.json", englishJson, Encoding.UTF8);*/
+
         }
+        public static bool CheckingJson()
+        {
+            string russianFilePath = "D:\\SSP\\laba1\\laba1\\bin\\Debug\\net6.0-windows\\russianToEnglish.json";
+            string englishFilePath = "D:\\SSP\\laba1\\laba1\\bin\\Debug\\net6.0-windows\\englishToRussian.json";
+            try
+            {
+                string russianJson = File.ReadAllText(russianFilePath, Encoding.UTF8);
+                string englishJson = File.ReadAllText(englishFilePath, Encoding.UTF8);
+                if (string.IsNullOrEmpty(russianJson) || string.IsNullOrEmpty(englishJson))
+                {
+                    string caption = "Были найдены ошибки в структуре JSON";
+                    string message = "Один или оба JSON файла не содержат информации";
+                    MessageBoxButtons buttons = MessageBoxButtons.OK;
+                    MessageBox.Show(message, caption, buttons);
+                    return false;
+                }
+
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                };
+
+                russianToEnglish = JsonSerializer.Deserialize<Dictionary<string, string>>(russianJson, options);
+                englishToRussian = JsonSerializer.Deserialize<Dictionary<string, string>>(englishJson, options);
+
+                // Дальнейшие действия с полученными словарями
+
+            }
+            catch (JsonException ex)
+            {
+                string caption = "Были найдены ошибки в структуре JSON";
+                string message = ex.Message;
+                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                MessageBox.Show(message, caption, buttons);
+                return false;
+               
+            }
+            catch (IOException ex)
+            {
+                string caption = "Возникла ошибка при чтении";
+                string message = ex.Message;
+                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                MessageBox.Show(message, caption, buttons);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                string caption = "Возникла непредвиденная ошибка";
+                string message = ex.Message;
+                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                MessageBox.Show(message, caption, buttons);
+                return false;
+            }
+            return true;
+        }
+        
+
     }
 }

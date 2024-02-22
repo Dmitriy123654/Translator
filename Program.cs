@@ -10,6 +10,8 @@ namespace laba1
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
+            if (!DataStorage.CheckingJson())
+                return;
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
         }

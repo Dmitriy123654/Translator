@@ -20,20 +20,31 @@ namespace laba1
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void ChangeLanguageButton_Click(object sender, EventArgs e)
         {
-            this.stateOfLanguage = !stateOfLanguage;
-            if (this.stateOfLanguage)
+            var temp = this.OutputLanguageLabel.Text;
+            this.OutputLanguageLabel.Text = this.inputLanguageLabel.Text;
+            this.inputLanguageLabel.Text = temp;
+            var inputText = this.inputTextBox.Text;
+            string[] words = inputText.Split(new[] { "\r\n", " " }, StringSplitOptions.RemoveEmptyEntries);
+            List<string> outputWords = new List<string>();
+            foreach(string word in this.OutputListBox.Items)
             {
-                this.inputLanguageLabel.Text = "Русский";
-                this.OutputLanguageLabel.Text = "Английский";
-            } else
-            {
-                this.OutputLanguageLabel.Text = "Русский";
-                this.inputLanguageLabel.Text = "Английский";
+                outputWords.Add(word);
             }
             this.OutputListBox.Items.Clear();
-
+            foreach(string word in words)
+            {
+                this.OutputListBox.Items.Add(word);
+            }
+            string newInputText = "";
+            foreach(string word in outputWords)
+            {
+                newInputText += word;
+                newInputText+= "\r\n";
+            }
+            this.inputTextBox.Text = newInputText; 
+            
         }
 
         private void translateButton_Click(object sender, EventArgs e)
@@ -90,7 +101,7 @@ namespace laba1
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void clearButton_Click(object sender, EventArgs e)
         {
             this.inputTextBox.Text = "";
             this.OutputListBox.Items.Clear();

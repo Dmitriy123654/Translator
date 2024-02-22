@@ -6,7 +6,7 @@ namespace laba1
     partial class Form1
     {
         private bool stateOfLanguage = true;
-        private static DataStorage dataStorage = new DataStorage();
+        //private static DataStorage dataStorage;
         private System.ComponentModel.IContainer components = null;
 
         protected override void Dispose(bool disposing)
@@ -43,41 +43,63 @@ namespace laba1
             }
 
 
-            if (dataStorage.russianToEnglish.ContainsKey(inputString))
+            if (DataStorage.russianToEnglish.ContainsKey(inputString))
             {
-                output = dataStorage.russianToEnglish[inputString];
+                output = DataStorage.russianToEnglish[inputString];
                 OutPutlist.Add(output);
-                return (OutPutlist, true, null);
+                List<string> updatedPossibleErrors2 = new List<string>();
+
+                foreach (var item in OutPutlist)
+                {
+                    string[] words = item.Split(' ');
+
+                    foreach (var word in words)
+                    {
+                        updatedPossibleErrors2.Add(word);
+                    }
+                }
+                return (updatedPossibleErrors2, true, null);
             }
-            else if (dataStorage.englishToRussian.ContainsKey(inputString))
+            else if (DataStorage.englishToRussian.ContainsKey(inputString))
             {
-                output = dataStorage.englishToRussian[inputString];
+                output = DataStorage.englishToRussian[inputString];
                 OutPutlist.Add(output);
-                return (OutPutlist, true, null);
+                List<string> updatedPossibleErrors3 = new List<string>();
+
+                foreach (var item in OutPutlist)
+                {
+                    string[] words = item.Split(' ');
+
+                    foreach (var word in words)
+                    {
+                        updatedPossibleErrors3.Add(word);
+                    }
+                }
+                return (updatedPossibleErrors3, true, null);
             }
             List<string> possibleErrors;
             if (russianLanguage)
-                possibleErrors = FindPossibleErrors(inputString, dataStorage.russianToEnglish);
+                possibleErrors = FindPossibleErrors(inputString, DataStorage.russianToEnglish);
             else
-                possibleErrors = FindPossibleErrors(inputString, dataStorage.englishToRussian);
+                possibleErrors = FindPossibleErrors(inputString, DataStorage.englishToRussian);
 
             if (possibleErrors.Count == 1)
             {
                 string correctedWord = possibleErrors[0];
                 if (russianLanguage)
                 {
-                    if (dataStorage.russianToEnglish.ContainsKey(correctedWord))
+                    if (DataStorage.russianToEnglish.ContainsKey(correctedWord))
                     {
                         // Найдено исправленное слово в русско-английском словаре
-                        output = dataStorage.russianToEnglish[correctedWord];
+                        output = DataStorage.russianToEnglish[correctedWord];
 
                         OutPutlist.Add(output);
                     }
                 }
-                else if (dataStorage.englishToRussian.ContainsKey(correctedWord))
+                else if (DataStorage.englishToRussian.ContainsKey(correctedWord))
                 {
                     //Найдено исправленное слово в англо-русском словаре
-                    output = dataStorage.englishToRussian[correctedWord];
+                    output = DataStorage.englishToRussian[correctedWord];
                     OutPutlist.Add(output);
                 }
             }
@@ -89,19 +111,78 @@ namespace laba1
 
 
             List<string> NonTranslated = new List<string>();
+
             if (russianLanguage)
+            {
                 foreach (var NonTranslatedString in possibleErrors)
                 {
-                    NonTranslated.Add(dataStorage.englishToRussian[NonTranslatedString]);
+                    if (DataStorage.englishToRussian.TryGetValue(NonTranslatedString, out var translation))
+                    {
+                        NonTranslated.Add(translation);
+                    }
+                    else
+                    {
+                        string[] words = NonTranslatedString.Split(' ');
+
+                        foreach (var word in words)
+                        {
+                            if (DataStorage.englishToRussian.TryGetValue(word, out var subTranslation))
+                            {
+                                NonTranslated.Add(subTranslation);
+                                break;
+                            }
+                        }
+
+                        // Если ни одно из слов не найдено в словаре, добавляем исходное слово без перевода
+                        if (NonTranslated.Count == 0)
+                        {
+                            NonTranslated.Add(NonTranslatedString);
+                        }
+                    }
                 }
+            }
             else
             {
                 foreach (var NonTranslatedString in possibleErrors)
                 {
-                    NonTranslated.Add(dataStorage.russianToEnglish[NonTranslatedString]);
+                    if (DataStorage.russianToEnglish.TryGetValue(NonTranslatedString, out var translation))
+                    {
+                        NonTranslated.Add(translation);
+                    }
+                    else
+                    {
+                        string[] words = NonTranslatedString.Split(' ');
+
+                        foreach (var word in words)
+                        {
+                            if (DataStorage.russianToEnglish.TryGetValue(word, out var subTranslation))
+                            {
+                                NonTranslated.Add(subTranslation);
+                                break;
+                            }
+                        }
+
+                        // Если ни одно из слов не найдено в словаре, добавляем исходное слово без перевода
+                        if (NonTranslated.Count == 0)
+                        {
+                            NonTranslated.Add(NonTranslatedString);
+                        }
+                    }
                 }
             }
-            return (possibleErrors, false, NonTranslated);
+            List<string> updatedPossibleErrors = new List<string>();
+
+            foreach (var item in possibleErrors)
+            {
+                string[] words = item.Split(' ');
+
+                foreach (var word in words)
+                {
+                    updatedPossibleErrors.Add(word);
+                }
+            }
+
+            return (updatedPossibleErrors, false, NonTranslated);
         }
         private void InitializeComponent()
         {
@@ -134,23 +215,22 @@ namespace laba1
             this.inputTextBox.PlaceholderText = "Введите текст";
             this.inputTextBox.Size = new System.Drawing.Size(174, 108);
             this.inputTextBox.TabIndex = 1;
-            this.inputTextBox.UseWaitCursor = true;
             // 
             // inputLanguageLabel
             // 
             this.inputLanguageLabel.AutoSize = true;
             this.inputLanguageLabel.Location = new System.Drawing.Point(95, 60);
             this.inputLanguageLabel.Name = "inputLanguageLabel";
-            this.inputLanguageLabel.Size = new System.Drawing.Size(146, 20);
+            this.inputLanguageLabel.Size = new System.Drawing.Size(63, 20);
             this.inputLanguageLabel.TabIndex = 2;
             this.inputLanguageLabel.Text = "Русский";
             // 
             // OutputLanguageLabel
             // 
             this.OutputLanguageLabel.AutoSize = true;
-            this.OutputLanguageLabel.Location = new System.Drawing.Point(619, 64);
+            this.OutputLanguageLabel.Location = new System.Drawing.Point(591, 64);
             this.OutputLanguageLabel.Name = "OutputLanguageLabel";
-            this.OutputLanguageLabel.Size = new System.Drawing.Size(176, 20);
+            this.OutputLanguageLabel.Size = new System.Drawing.Size(92, 20);
             this.OutputLanguageLabel.TabIndex = 3;
             this.OutputLanguageLabel.Text = "Английский";
             this.OutputLanguageLabel.Click += new System.EventHandler(this.label3_Click);
@@ -159,16 +239,16 @@ namespace laba1
             // 
             this.OutputListBox.FormattingEnabled = true;
             this.OutputListBox.ItemHeight = 20;
-            this.OutputListBox.Location = new System.Drawing.Point(619, 89);
+            this.OutputListBox.Location = new System.Drawing.Point(591, 89);
             this.OutputListBox.Name = "OutputListBox";
-            this.OutputListBox.Size = new System.Drawing.Size(176, 104);
+            this.OutputListBox.Size = new System.Drawing.Size(175, 104);
             this.OutputListBox.TabIndex = 4;
             // 
             // translateButton
             // 
-            this.translateButton.Location = new System.Drawing.Point(383, 122);
+            this.translateButton.Location = new System.Drawing.Point(371, 123);
             this.translateButton.Name = "translateButton";
-            this.translateButton.Size = new System.Drawing.Size(94, 29);
+            this.translateButton.Size = new System.Drawing.Size(117, 29);
             this.translateButton.TabIndex = 5;
             this.translateButton.Text = "Перевести";
             this.translateButton.UseVisualStyleBackColor = true;
@@ -178,21 +258,21 @@ namespace laba1
             // 
             this.ChangeLanguageButton.Location = new System.Drawing.Point(371, 60);
             this.ChangeLanguageButton.Name = "ChangeLanguageButton";
-            this.ChangeLanguageButton.Size = new System.Drawing.Size(116, 24);
+            this.ChangeLanguageButton.Size = new System.Drawing.Size(117, 32);
             this.ChangeLanguageButton.TabIndex = 6;
             this.ChangeLanguageButton.Text = "Сменить язык";
             this.ChangeLanguageButton.UseVisualStyleBackColor = true;
-            this.ChangeLanguageButton.Click += new System.EventHandler(this.button2_Click);
+            this.ChangeLanguageButton.Click += new System.EventHandler(this.ChangeLanguageButton_Click);
             // 
             // ClearButton
             // 
-            this.ClearButton.Location = new System.Drawing.Point(383, 164);
+            this.ClearButton.Location = new System.Drawing.Point(371, 164);
             this.ClearButton.Name = "ClearButton";
-            this.ClearButton.Size = new System.Drawing.Size(94, 29);
+            this.ClearButton.Size = new System.Drawing.Size(117, 29);
             this.ClearButton.TabIndex = 7;
             this.ClearButton.Text = "Очистить";
             this.ClearButton.UseVisualStyleBackColor = true;
-            this.ClearButton.Click += new System.EventHandler(this.button1_Click);
+            this.ClearButton.Click += new System.EventHandler(this.clearButton_Click);
             // 
             // Form1
             // 
