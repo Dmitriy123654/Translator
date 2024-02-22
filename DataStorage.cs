@@ -96,8 +96,9 @@ namespace laba1
         }
         public static bool CheckingJson()
         {
-            string russianFilePath = "D:\\SSP\\laba1\\laba1\\bin\\Debug\\net6.0-windows\\russianToEnglish.json";
-            string englishFilePath = "D:\\SSP\\laba1\\laba1\\bin\\Debug\\net6.0-windows\\englishToRussian.json";
+            string basePath = Application.StartupPath;
+            string russianFilePath = Path.Combine(basePath, "russianToEnglish.json");
+            string englishFilePath = Path.Combine(basePath, "englishToRussian.json");
             try
             {
                 string russianJson = File.ReadAllText(russianFilePath, Encoding.UTF8);
