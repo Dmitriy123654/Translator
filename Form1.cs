@@ -51,8 +51,8 @@ namespace laba1
         {
             if (this.inputTextBox.Text.Length== 0)
             {
-                string message = "����������, ������� ����� леша лох";
-                string caption = "������ � �����леша лох";
+                string message = "Поле ввода не заполнено, пожалуйста, введите слово, требующее перевод";
+                string caption = "Ошибка";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 MessageBox.Show(message, caption, buttons);
                 return;  
@@ -63,8 +63,8 @@ namespace laba1
             (List<string> outputText, bool isCorrect, List<string> primalWord) translatedText = Translate(inputTextBox.Text, stateOfLanguage);
             if (translatedText.outputText.Count() == 0 || translatedText.outputText == null)
             {
-                string message = "�� �������� ���� ����� �� ���� ������� �������� ��������, �������� �������� ���� ����� �������� ������ ��� �� ����������� � �������леша лох";
-                string caption = "������ � �����леша лох";
+                string message = "Для введённого вами слова не был найден перевод, возможно оно отсутствует в словаре или содержит ошибку, перепроверьте введённое слово";
+                string caption = "Ошибка";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 MessageBox.Show(message, caption, buttons);
                 return;
@@ -87,8 +87,8 @@ namespace laba1
                 this.inputTextBox.Text = inputVariantsText;
                 if (translatedText.outputText.Count() > 1)
                 {
-                    string message = "леша лох � �������� ���� ����� ���� ������� ������, � ��������� ���� ����� ������������ ������������ �������� ����, ��� �� ����� ������ ������, � ��������� ���� ������- ��������������� �������� ��������";
-                    string caption = "�������������� леша лох";
+                    string message = "Для введённого вами слова не был найден однозначный перевод, представлена потенциальные варианты перевода и соответствующие им исходые слова";
+                    string caption = "Не был найден однозначный перевод";
                     MessageBoxButtons buttons = MessageBoxButtons.OK;
                     MessageBox.Show(message, caption, buttons);
                 }
