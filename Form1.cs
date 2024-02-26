@@ -105,6 +105,7 @@ namespace laba1
         {
             this.inputTextBox.Text = "";
             this.OutputListBox.Items.Clear();
+            Console.WriteLine("Dimas chmo");
         }
     }
 }
