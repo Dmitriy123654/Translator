@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
 
 namespace laba1
 {
@@ -7,6 +9,7 @@ namespace laba1
     {
         public static Dictionary<string, string> russianToEnglish = new Dictionary<string, string>();
         public static Dictionary<string, string> englishToRussian = new Dictionary<string, string>();
+        public static string? JsonPath { get; set; }
 
         public DataStorage()
         {
@@ -15,7 +18,7 @@ namespace laba1
             {
                 InitializeAsync();
             }*/
-            CheckingJson();
+            CheckingJsonFromFile();
         }
         private async Task InitializeAsync()
         {
@@ -94,63 +97,164 @@ namespace laba1
             File.WriteAllText("englishToRussian.json", englishJson, Encoding.UTF8);*/
 
         }
-        public static bool CheckingJson()
+        public static bool CheckingJsonFromFile(string fileName = "russianToEnglish.json")
         {
             string basePath = Application.StartupPath;
-            string russianFilePath = Path.Combine(basePath, "russianToEnglish.json");
-            string englishFilePath = Path.Combine(basePath, "englishToRussian.json");
+            string filePath = Path.Combine(basePath, fileName);
+
+            JsonPath = filePath;
+
             try
             {
-                string russianJson = File.ReadAllText(russianFilePath, Encoding.UTF8);
-                string englishJson = File.ReadAllText(englishFilePath, Encoding.UTF8);
-                if (string.IsNullOrEmpty(russianJson) || string.IsNullOrEmpty(englishJson))
+                string json = File.ReadAllText(filePath, Encoding.UTF8);
+                if (string.IsNullOrEmpty(json))
                 {
-                    string caption = "Были найдены ошибки в структуре JSON";
-                    string message = "Один или оба JSON файла не содержат информации";
-                    MessageBoxButtons buttons = MessageBoxButtons.OK;
-                    MessageBox.Show(message, caption, buttons);
+                    ShowErrorMessage("Файл не содержит информации", "Были найдены ошибки в структуре JSON");
                     return false;
                 }
 
                 JsonSerializerOptions options = new JsonSerializerOptions
                 {
-                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = true
                 };
 
-                russianToEnglish = JsonSerializer.Deserialize<Dictionary<string, string>>(russianJson, options);
-                englishToRussian = JsonSerializer.Deserialize<Dictionary<string, string>>(englishJson, options);
+                // Проверка наличия пустых ключей
+                if (!CheckEmptyKeys(json))
+                {
+                    return false;
+                }
 
-                // Дальнейшие действия с полученными словарями
+                russianToEnglish = JsonSerializer.Deserialize<Dictionary<string, string>>(json, options);
 
+                // Дальнейшие действия с полученным словарем
+
+                CreateReverseTranslation(options, fileName);
             }
             catch (JsonException ex)
             {
-                string caption = "Были найдены ошибки в структуре JSON";
-                string message = ex.Message;
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBox.Show(message, caption, buttons);
+                ShowErrorMessage(ex.Message, "Были найдены ошибки в структуре JSON");
                 return false;
-               
             }
             catch (IOException ex)
             {
-                string caption = "Возникла ошибка при чтении";
-                string message = ex.Message;
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBox.Show(message, caption, buttons);
+                ShowErrorMessage(ex.Message, "Возникла ошибка при чтении");
                 return false;
             }
             catch (Exception ex)
             {
-                string caption = "Возникла непредвиденная ошибка";
-                string message = ex.Message;
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBox.Show(message, caption, buttons);
+                ShowErrorMessage(ex.Message, "Возникла непредвиденная ошибка");
                 return false;
             }
             return true;
         }
-        
+
+        public static bool UpdateJsonFiles(string fileName = "russianToEnglish.json")
+        {
+            string basePath = Application.StartupPath;
+            string filePath = Path.Combine(basePath, fileName);
+            string reverseFileName = Path.GetFileNameWithoutExtension(fileName) + "_reverse.json";
+            string reverseFilePath = Path.Combine(basePath, reverseFileName);
+
+            try
+            {
+                string json = File.ReadAllText(filePath, Encoding.UTF8);
+                if (string.IsNullOrEmpty(json))
+                {
+                    ShowErrorMessage("Файл не содержит информации", "Были найдены ошибки в структуре JSON");
+                    return false;
+                }
+
+                if (!CheckEmptyKeysInDictionary())
+                {
+                    return false;
+                }
+
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = true
+                };
+
+                UpdateReverseTranslation(options, fileName, reverseFilePath);
+
+                string updatedJson = JsonSerializer.Serialize(russianToEnglish, options);
+                File.WriteAllText(filePath, updatedJson, Encoding.UTF8);
+            }
+            catch (JsonException ex)
+            {
+                ShowErrorMessage(ex.Message, "Были найдены ошибки в структуре JSON");
+                return false;
+            }
+            catch (IOException ex)
+            {
+                ShowErrorMessage(ex.Message, "Возникла ошибка при чтении");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "Возникла непредвиденная ошибка");
+                return false;
+            }
+            return true;
+        }
+
+        private static bool CheckEmptyKeys(string json)
+        {
+            JObject jsonObject = JObject.Parse(json);
+            foreach (var property in jsonObject.Properties())
+            {
+                if (property.Name == "")
+                {
+                    throw new JsonException("Найден пустой ключ в JSON");
+                }
+            }
+            return true;
+        }
+
+        private static void CreateReverseTranslation(JsonSerializerOptions options, string fileName)
+        {
+            englishToRussian = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> pair in russianToEnglish)
+            {
+                englishToRussian[pair.Value] = pair.Key;
+            }
+
+            string reverseJson = JsonSerializer.Serialize(englishToRussian, options);
+            string reverseFileName = Path.GetFileNameWithoutExtension(fileName) + "_reverse.json";
+            string reverseFilePath = Path.Combine(Application.StartupPath, reverseFileName);
+            File.WriteAllText(reverseFilePath, reverseJson, Encoding.UTF8);
+        }
+
+        private static bool CheckEmptyKeysInDictionary()
+        {
+            foreach (var pair in russianToEnglish)
+            {
+                if (string.IsNullOrEmpty(pair.Key))
+                {
+                    throw new JsonException("Найден пустой ключ в словаре");
+                }
+            }
+            return true;
+        }
+
+        private static void UpdateReverseTranslation(JsonSerializerOptions options, string fileName, string reverseFilePath)
+        {
+            englishToRussian = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> pair in russianToEnglish)
+            {
+                englishToRussian[pair.Value] = pair.Key;
+            }
+
+            string reverseJson = JsonSerializer.Serialize(englishToRussian, options);
+            File.WriteAllText(reverseFilePath, reverseJson, Encoding.UTF8);
+        }
+
+        private static void ShowErrorMessage(string message, string caption)
+        {
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            MessageBox.Show(message, caption, buttons);
+        }
 
     }
 }

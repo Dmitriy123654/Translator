@@ -4,7 +4,11 @@ using System.Text.RegularExpressions;
 namespace laba1
 {
     partial class Form1
+
     {
+
+        public static string inputText;
+        public static string outputText;
         private bool stateOfLanguage = true;
         //private static DataStorage dataStorage;
         private System.ComponentModel.IContainer components = null;
@@ -29,18 +33,6 @@ namespace laba1
             var (statusValidation, russianLanguage) = CheckLanguageValidity(inputString);
             if (!statusValidation)
                 return (OutPutlist, false, null);
-
-            if (russianLanguage)
-            {
-                this.inputLanguageLabel.Text = "Русский";
-                this.OutputLanguageLabel.Text = "Английский";
-            }
-
-            if(!russianLanguage)
-            {
-                this.inputLanguageLabel.Text = "Английский";
-                this.OutputLanguageLabel.Text = "Русский";
-            }
 
 
             if (DataStorage.russianToEnglish.ContainsKey(inputString))
@@ -194,6 +186,8 @@ namespace laba1
             this.translateButton = new System.Windows.Forms.Button();
             this.ChangeLanguageButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.SettingsButton = new System.Windows.Forms.Button();
+            this.EditButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // title
@@ -274,11 +268,33 @@ namespace laba1
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.clearButton_Click);
             // 
+            // SettingsButton
+            // 
+            this.SettingsButton.Location = new System.Drawing.Point(758, 0);
+            this.SettingsButton.Name = "SettingsButton";
+            this.SettingsButton.Size = new System.Drawing.Size(110, 29);
+            this.SettingsButton.TabIndex = 8;
+            this.SettingsButton.Text = "Настройки";
+            this.SettingsButton.UseVisualStyleBackColor = true;
+            this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
+            // 
+            // EditButton
+            // 
+            this.EditButton.Location = new System.Drawing.Point(-2, 0);
+            this.EditButton.Name = "EditButton";
+            this.EditButton.Size = new System.Drawing.Size(120, 29);
+            this.EditButton.TabIndex = 9;
+            this.EditButton.Text = "Редактировать";
+            this.EditButton.UseVisualStyleBackColor = true;
+            this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(866, 461);
+            this.Controls.Add(this.EditButton);
+            this.Controls.Add(this.SettingsButton);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.ChangeLanguageButton);
             this.Controls.Add(this.translateButton);
@@ -519,6 +535,8 @@ namespace laba1
         private Button translateButton;
         private Button ChangeLanguageButton;
         private Button ClearButton;
+        private Button SettingsButton;
+        private Button EditButton;
     }
 
 }
