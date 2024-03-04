@@ -149,6 +149,14 @@ namespace laba1
                 };
                 editDialog.Controls.Add(deleteButton);
 
+                var addButton = new Button()
+                {
+                    Text = "Добавить",
+                    Location = new Point(10, 250),
+                    DialogResult = DialogResult.OK
+                };
+                editDialog.Controls.Add(addButton);
+
                 editDialog.AcceptButton = editButton;
                 editDialog.CancelButton = deleteButton;
 
@@ -251,9 +259,93 @@ namespace laba1
                     // Обновление списка слов
                     UpdateWordList();
                 }
+                else if (result == DialogResult.OK)
+                {
+                    // Добавление нового слова
+                    using (var addWordDialog = new Form())
+                    {
+                        addWordDialog.Text = "Добавление слова";
+                        addWordDialog.StartPosition = FormStartPosition.CenterParent;
+
+                        var label = new Label()
+                        {
+                            Text = "Введите новое слово и его перевод:",
+                            Location = new Point(10, 10),
+                            AutoSize = true
+                        };
+                        addWordDialog.Controls.Add(label);
+
+                        var wordLabel = new Label()
+                        {
+                            Text = "Слово:",
+                            Location = new Point(10, 30),
+                            AutoSize = true
+                        };
+                        addWordDialog.Controls.Add(wordLabel);
+
+                        var wordTextBox = new TextBox()
+                        {
+                            Location = new Point(70, 30),
+                            Size = new Size(200, 20)
+                        };
+                        addWordDialog.Controls.Add(wordTextBox);
+
+                        var translationLabel = new Label()
+                        {
+                            Text = "Перевод:",
+                            Location = new Point(10, 60),
+                            AutoSize = true
+                        };
+                        addWordDialog.Controls.Add(translationLabel);
+
+                        var translationTextBox = new TextBox()
+                        {
+                            Location = new Point(70, 60),
+                            Size = new Size(200, 20)
+                        };
+                        addWordDialog.Controls.Add(translationTextBox);
+
+                        var saveButton = new Button()
+                        {
+                            Text = "Сохранить",
+                            Location = new Point(10, 90),
+                            DialogResult = DialogResult.OK
+                        };
+                        addWordDialog.Controls.Add(saveButton);
+
+                        var cancelButton = new Button()
+                        {
+                            Text = "Отмена",
+                            Location = new Point(90, 90),
+                            DialogResult = DialogResult.Cancel
+                        };
+                        addWordDialog.Controls.Add(cancelButton);
+
+                        addWordDialog.AcceptButton = saveButton;
+                        addWordDialog.CancelButton = cancelButton;
+
+                        DialogResult addResult = addWordDialog.ShowDialog();
+
+                        if (addResult == DialogResult.OK)
+                        {
+                            // Получение нового слова и его перевода из текстовых полей
+                            string newWord = wordTextBox.Text;
+                            string newTranslation = translationTextBox.Text;
+
+                            // Добавление нового слова в словарь
+                            if (!DataStorage.russianToEnglish.ContainsKey(newWord))
+                            {
+                                DataStorage.russianToEnglish[newWord] = newTranslation;
+                            }
+
+                            // Обновление списка слов
+                            this.OutputListBox.Items.Clear();
+                            UpdateWordList();
+                        }
+                    }
+                }
             }
-            this.inputTextBox.Text = "";
-            this.OutputListBox.Items.Clear();
+            DataStorage.UpdateJsonFiles();  
         }
 
         private void UpdateWordList()
