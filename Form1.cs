@@ -119,6 +119,8 @@ namespace laba1
             {
                 editDialog.Text = "Редактирование и удаление слова";
                 editDialog.StartPosition = FormStartPosition.CenterParent;
+                editDialog.Height = 370;
+                editDialog.Width = 280;
 
                 var wordList = new ListBox()
                 {
@@ -137,23 +139,28 @@ namespace laba1
                 {
                     Text = "Редактировать",
                     Location = new Point(10, 220),
-                    DialogResult = DialogResult.Yes
+                    DialogResult = DialogResult.Yes,
+                    Width = 120,
+                    Height = 30
                 };
                 editDialog.Controls.Add(editButton);
 
                 var deleteButton = new Button()
                 {
                     Text = "Удалить",
-                    Location = new Point(120, 220),
-                    DialogResult = DialogResult.No
+                    Location = new Point(140, 220),
+                    DialogResult = DialogResult.No,
+                    Height = 30
                 };
                 editDialog.Controls.Add(deleteButton);
 
                 var addButton = new Button()
                 {
                     Text = "Добавить",
-                    Location = new Point(10, 250),
-                    DialogResult = DialogResult.OK
+                    Location = new Point(10, 255),
+                    DialogResult = DialogResult.OK,
+                    Width = 120,
+                    Height=30
                 };
                 editDialog.Controls.Add(addButton);
 
@@ -178,12 +185,13 @@ namespace laba1
 
                     using (var editWordDialog = new Form())
                     {
+                        editWordDialog.Height = 170;
                         editWordDialog.Text = "Редактирование слова";
                         editWordDialog.StartPosition = FormStartPosition.CenterParent;
 
                         var label = new Label()
                         {
-                            Text = "Введите новое слово:",
+                            Text = "Введите новое определение:",
                             Location = new Point(10, 10),
                             AutoSize = true
                         };
@@ -193,7 +201,7 @@ namespace laba1
                         {
                             Text = word,
                             Location = new Point(10, 30),
-                            Size = new Size(200, 20)
+                            Size = new Size(258, 20)
                         };
                         editWordDialog.Controls.Add(textBox);
 
@@ -201,6 +209,8 @@ namespace laba1
                         {
                             Text = "Сохранить",
                             Location = new Point(10, 60),
+                            Width = 120,
+                            Height = 30,
                             DialogResult = DialogResult.OK
                         };
                         editWordDialog.Controls.Add(saveButton);
@@ -208,7 +218,9 @@ namespace laba1
                         var cancelButton = new Button()
                         {
                             Text = "Отмена",
-                            Location = new Point(90, 60),
+                            Location = new Point(150, 65),
+                            Width = 120,
+                            Height = 30,
                             DialogResult = DialogResult.Cancel
                         };
                         editWordDialog.Controls.Add(cancelButton);
@@ -273,6 +285,8 @@ namespace laba1
                     // Добавление нового слова
                     using (var addWordDialog = new Form())
                     {
+                        addWordDialog.Width = 310;
+                        addWordDialog.Height = 200;
                         addWordDialog.Text = "Добавление слова";
                         addWordDialog.StartPosition = FormStartPosition.CenterParent;
 
@@ -294,8 +308,8 @@ namespace laba1
 
                         var wordTextBox = new TextBox()
                         {
-                            Location = new Point(70, 30),
-                            Size = new Size(200, 20)
+                            Location = new Point(110, 30),
+                            Size = new Size(160, 20)
                         };
                         addWordDialog.Controls.Add(wordTextBox);
 
@@ -309,14 +323,17 @@ namespace laba1
 
                         var translationTextBox = new TextBox()
                         {
-                            Location = new Point(70, 60),
-                            Size = new Size(200, 20)
+                            Location = new Point(110, 60),
+                            Size = new Size(160, 20)
                         };
                         addWordDialog.Controls.Add(translationTextBox);
 
                         var saveButton = new Button()
                         {
                             Text = "Сохранить",
+                            Width = 100,
+                            Height= 30,
+                            AutoSize = true,
                             Location = new Point(10, 90),
                             DialogResult = DialogResult.OK
                         };
@@ -325,7 +342,8 @@ namespace laba1
                         var cancelButton = new Button()
                         {
                             Text = "Отмена",
-                            Location = new Point(90, 90),
+                            Location = new Point(196, 90),
+                            Height=30,
                             DialogResult = DialogResult.Cancel
                         };
                         addWordDialog.Controls.Add(cancelButton);
