@@ -10,7 +10,7 @@ namespace laba1
         public static Dictionary<string, string> russianToEnglish = new Dictionary<string, string>();
         public static Dictionary<string, string> englishToRussian = new Dictionary<string, string>();
         public static string? JsonPath { get; set; }
-
+        public static string? FileName { get; set; }
         public DataStorage()
         {
 
@@ -101,7 +101,7 @@ namespace laba1
         {
             string basePath = Application.StartupPath;
             string filePath = Path.Combine(basePath, fileName);
-
+            FileName = fileName;
             JsonPath = filePath;
 
             try
@@ -149,11 +149,11 @@ namespace laba1
             return true;
         }
 
-        public static bool UpdateJsonFiles(string fileName = "russianToEnglish.json")
+        public static bool UpdateJsonFiles()
         {
             string basePath = Application.StartupPath;
-            string filePath = Path.Combine(basePath, fileName);
-            string reverseFileName = Path.GetFileNameWithoutExtension(fileName) + "_reverse.json";
+            string filePath = Path.Combine(basePath, FileName);
+            string reverseFileName = Path.GetFileNameWithoutExtension(FileName) + "_reverse.json";
             string reverseFilePath = Path.Combine(basePath, reverseFileName);
 
             try
@@ -176,7 +176,7 @@ namespace laba1
                     WriteIndented = true
                 };
 
-                UpdateReverseTranslation(options, fileName, reverseFilePath);
+                UpdateReverseTranslation(options, FileName, reverseFilePath);
 
                 string updatedJson = JsonSerializer.Serialize(russianToEnglish, options);
                 File.WriteAllText(filePath, updatedJson, Encoding.UTF8);

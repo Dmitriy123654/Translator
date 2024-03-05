@@ -223,6 +223,15 @@ namespace laba1
                             // Получение отредактированного слова из текстового поля
                             string editedWord = textBox.Text;
 
+                            if (editedWord == "" || editedWord == null)
+                            {
+                                string message = "Одно из полей ввода не содержит информации, перепроверьте введённые даные";
+                                string caption = "Ошибка";
+                                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                                MessageBox.Show(message, caption, buttons);
+                                return;
+                            }
+
                             // Редактирование слова в словаре
                             if (DataStorage.russianToEnglish.ContainsKey(word))
                             {
@@ -247,7 +256,7 @@ namespace laba1
                         return;
                     }
 
-                    string[] parts = selectedWord.Split(new string[] { " - " }, StringSplitOptions.None);
+                    string[] parts = selectedWord.Split(new string[] { "-" }, StringSplitOptions.None);
                     string word = parts[0];
 
                     // Удаление слова из словаря
@@ -332,6 +341,15 @@ namespace laba1
                             string newWord = wordTextBox.Text;
                             string newTranslation = translationTextBox.Text;
 
+                            if(newWord == "" || newWord == null || newTranslation == "" || newTranslation == null)
+                            {
+                                string message = "Одно из полей ввода не содержит информации, перепроверьте введённые даные";
+                                string caption = "Ошибка";
+                                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                                MessageBox.Show(message, caption, buttons);
+                                return;
+                            }
+
                             // Добавление нового слова в словарь
                             if (!DataStorage.russianToEnglish.ContainsKey(newWord))
                             {
@@ -345,19 +363,14 @@ namespace laba1
                     }
                 }
             }
+            OutputListBox.Items.Clear();
             DataStorage.UpdateJsonFiles();  
         }
 
         private void UpdateWordList()
         {
             OutputListBox.Items.Clear();
-
-            // Добавление слов из словаря в список
-            foreach (var pair in DataStorage.russianToEnglish)
-            {
-                OutputListBox.Items.Add($"{pair.Key} - {pair.Value}");
-            }
-            DataStorage.UpdateJsonFiles(DataStorage.JsonPath);
+            DataStorage.UpdateJsonFiles();
         }
     }
 }
