@@ -7,8 +7,8 @@ namespace laba1
 
     {
 
-        public static string inputText;
-        public static string outputText;
+        public static string inputText = "Русский";
+        public static string outputText = "Английский";
         private bool stateOfLanguage = true;
         //private static DataStorage dataStorage;
         private System.ComponentModel.IContainer components = null;
@@ -30,14 +30,11 @@ namespace laba1
             string output = "";
             //обрезаем пробелы и \n 
             inputString = inputString.Trim();
-            var (statusValidation, russianLanguage) = CheckLanguageValidity(inputString);
-            if (!statusValidation)
-                return (OutPutlist, false, null);
+            //DataStorage.ChangeLanguage(stateOfLanguage);
 
-
-            if (DataStorage.russianToEnglish.ContainsKey(inputString))
+            if (stateOfLanguage && DataStorage.Words.ContainsKey(inputString))
             {
-                output = DataStorage.russianToEnglish[inputString];
+                output = DataStorage.Words[inputString];
                 OutPutlist.Add(output);
                 List<string> updatedPossibleErrors2 = new List<string>();
 
@@ -52,9 +49,9 @@ namespace laba1
                 }
                 return (updatedPossibleErrors2, true, null);
             }
-            else if (DataStorage.englishToRussian.ContainsKey(inputString))
+            else if (!stateOfLanguage && DataStorage.TransletedWords.ContainsKey(inputString))
             {
-                output = DataStorage.englishToRussian[inputString];
+                output = DataStorage.TransletedWords[inputString];
                 OutPutlist.Add(output);
                 List<string> updatedPossibleErrors3 = new List<string>();
 
@@ -69,29 +66,30 @@ namespace laba1
                 }
                 return (updatedPossibleErrors3, true, null);
             }
-            List<string> possibleErrors;
-            if (russianLanguage)
-                possibleErrors = FindPossibleErrors(inputString, DataStorage.russianToEnglish);
-            else
-                possibleErrors = FindPossibleErrors(inputString, DataStorage.englishToRussian);
+            List<string> possibleErrors = new List<string>();
+
+            if (stateOfLanguage)
+                possibleErrors = FindPossibleErrors(inputString, DataStorage.Words);
+            else if(!stateOfLanguage)
+                possibleErrors = FindPossibleErrors(inputString, DataStorage.TransletedWords);
 
             if (possibleErrors.Count == 1)
             {
                 string correctedWord = possibleErrors[0];
-                if (russianLanguage)
+                if (stateOfLanguage)
                 {
-                    if (DataStorage.russianToEnglish.ContainsKey(correctedWord))
+                    if (DataStorage.Words.ContainsKey(correctedWord))
                     {
                         // Найдено исправленное слово в русско-английском словаре
-                        output = DataStorage.russianToEnglish[correctedWord];
+                        output = DataStorage.Words[correctedWord];
 
                         OutPutlist.Add(output);
                     }
                 }
-                else if (DataStorage.englishToRussian.ContainsKey(correctedWord))
+                else if (!stateOfLanguage && DataStorage.TransletedWords.ContainsKey(correctedWord))
                 {
                     //Найдено исправленное слово в англо-русском словаре
-                    output = DataStorage.englishToRussian[correctedWord];
+                    output = DataStorage.TransletedWords[correctedWord];
                     OutPutlist.Add(output);
                 }
             }
@@ -104,11 +102,11 @@ namespace laba1
 
             List<string> NonTranslated = new List<string>();
 
-            if (russianLanguage)
+            if (stateOfLanguage)
             {
                 foreach (var NonTranslatedString in possibleErrors)
                 {
-                    if (DataStorage.englishToRussian.TryGetValue(NonTranslatedString, out var translation))
+                    if (DataStorage.TransletedWords.TryGetValue(NonTranslatedString, out var translation))
                     {
                         NonTranslated.Add(translation);
                     }
@@ -118,7 +116,7 @@ namespace laba1
 
                         foreach (var word in words)
                         {
-                            if (DataStorage.englishToRussian.TryGetValue(word, out var subTranslation))
+                            if (DataStorage.TransletedWords.TryGetValue(word, out var subTranslation))
                             {
                                 NonTranslated.Add(subTranslation);
                                 break;
@@ -133,11 +131,11 @@ namespace laba1
                     }
                 }
             }
-            else
+            else if(!stateOfLanguage)
             {
                 foreach (var NonTranslatedString in possibleErrors)
                 {
-                    if (DataStorage.russianToEnglish.TryGetValue(NonTranslatedString, out var translation))
+                    if (DataStorage.Words.TryGetValue(NonTranslatedString, out var translation))
                     {
                         NonTranslated.Add(translation);
                     }
@@ -147,7 +145,7 @@ namespace laba1
 
                         foreach (var word in words)
                         {
-                            if (DataStorage.russianToEnglish.TryGetValue(word, out var subTranslation))
+                            if (DataStorage.Words.TryGetValue(word, out var subTranslation))
                             {
                                 NonTranslated.Add(subTranslation);
                                 break;
@@ -176,6 +174,7 @@ namespace laba1
 
             return (updatedPossibleErrors, false, NonTranslated);
         }
+
         private void InitializeComponent()
         {
             this.title = new System.Windows.Forms.Label();

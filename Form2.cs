@@ -29,12 +29,27 @@ namespace laba1
                 string selectedFilePath = openFileDialog.FileName;
                 DataStorage.CheckingJsonFromFile(selectedFilePath);
 
-           
-                string message = "Выбранный вами словарь был успешно загружен в память";
-                string caption = "Успех";
-                MessageBoxButtons buttons = MessageBoxButtons.OK;
-                MessageBox.Show(message, caption, buttons);
-                
+                string fileName = Path.GetFileNameWithoutExtension(selectedFilePath);
+                string[] fileNames = fileName.Split('-');
+
+                if (fileNames.Length == 2)
+                {
+                    string inputLanguage = fileNames[0];
+                    string outputLanguage = fileNames[1];
+                    Form1.inputText = inputLanguage;
+                    Form1.outputText = outputLanguage;
+                    Program.fm1.UpdateLanguageLabels();
+
+                    string message = $"Выбранный вами словарь ({inputLanguage}-{outputLanguage}) был успешно загружен в память";
+                    string caption = "Успех";
+                    MessageBoxButtons buttons = MessageBoxButtons.OK;
+                    MessageBox.Show(message, caption, buttons);
+                }
+                else
+                {
+                    //MessageBox.Show("Неверный формат названия файла словаря", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
                 this.Close();
             }
         }

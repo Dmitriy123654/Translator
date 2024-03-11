@@ -7,14 +7,15 @@ namespace laba1
 {
     public class DataStorage
     {
-        public static Dictionary<string, string> russianToEnglish = new Dictionary<string, string>();
-        public static Dictionary<string, string> englishToRussian = new Dictionary<string, string>();
-        public static string? JsonPath { get; set; }
-        public static string? FileName { get; set; }
+        private const string StandartFile = "Русский-Английский.json";
+        public static Dictionary<string, string> Words = new Dictionary<string, string>();
+        public static Dictionary<string, string> TransletedWords = new Dictionary<string, string>();
+        public static string JsonPath { get; set; }
+        public static string FileName { get; set; }
         public DataStorage()
         {
 
-            /*if (russianToEnglish.Count == 0 || russianToEnglish == null)
+            /*if (Words.Count == 0 || Words == null)
             {
                 InitializeAsync();
             }*/
@@ -23,65 +24,65 @@ namespace laba1
         private async Task InitializeAsync()
         {
             // Заполнение словарей русско-английскими и англо-русскими словами
-            /*russianToEnglish.Add("яблоко", "apple");
-            russianToEnglish.Add("кот", "cat");
-            russianToEnglish.Add("собака", "dog");
-            russianToEnglish.Add("стол", "table");
-            russianToEnglish.Add("книга", "book");
-            russianToEnglish.Add("машина", "car");
-            russianToEnglish.Add("дом", "house");
-            russianToEnglish.Add("ручка", "pen");
-            russianToEnglish.Add("школа", "school");
-            russianToEnglish.Add("окно", "window");
-            russianToEnglish.Add("компьютер", "computer");
-            russianToEnglish.Add("стул", "chair");
-            russianToEnglish.Add("гитара", "guitar");
-            russianToEnglish.Add("телефон", "phone");
-            russianToEnglish.Add("молоко", "milk");
-            russianToEnglish.Add("класс", "class");
-            russianToEnglish.Add("книжка", "booklet");
-            russianToEnglish.Add("солнце", "sun");
-            russianToEnglish.Add("парк", "park");
-            russianToEnglish.Add("мяч", "ball");
-            russianToEnglish.Add("флаг", "flag");
-            russianToEnglish.Add("река", "river");
-            russianToEnglish.Add("капуста", "cabbage");
-            russianToEnglish.Add("банан", "banana");
-            russianToEnglish.Add("дождь", "rain");
-            russianToEnglish.Add("пианино", "piano");
-            russianToEnglish.Add("зонт", "umbrella");
-            russianToEnglish.Add("ноутбук", "laptop");
-            russianToEnglish.Add("море", "sea");
-            russianToEnglish.Add("музей", "museum");
-            russianToEnglish.Add("звезда", "star");
-            russianToEnglish.Add("птица", "bird");
-            russianToEnglish.Add("космос", "space");
-            russianToEnglish.Add("пароль", "password");
-            russianToEnglish.Add("луна", "moon");
-            russianToEnglish.Add("снег", "snow");
-            russianToEnglish.Add("футбол", "football");
-            russianToEnglish.Add("носок", "sock");
-            russianToEnglish.Add("зебра", "zebra");
-            russianToEnglish.Add("печенье", "cookie");
-            russianToEnglish.Add("гора", "mountain");
-            russianToEnglish.Add("планета", "planet");
-            russianToEnglish.Add("цирк", "circus");
-            russianToEnglish.Add("шапка", "hat");
-            russianToEnglish.Add("змея", "snake");
-            russianToEnglish.Add("шоколад", "chocolate");
-            russianToEnglish.Add("поезд", "train");
-            russianToEnglish.Add("песня", "song");
-            russianToEnglish.Add("платье", "dress");
-            russianToEnglish.Add("фильм", "movie");
-            russianToEnglish.Add("ящик", "box");
-            russianToEnglish.Add("замок", "castle");
-            russianToEnglish.Add("кто", "who");
-            russianToEnglish.Add("кора", "bark");
+            /*Words.Add("яблоко", "apple");
+            Words.Add("кот", "cat");
+            Words.Add("собака", "dog");
+            Words.Add("стол", "table");
+            Words.Add("книга", "book");
+            Words.Add("машина", "car");
+            Words.Add("дом", "house");
+            Words.Add("ручка", "pen");
+            Words.Add("школа", "school");
+            Words.Add("окно", "window");
+            Words.Add("компьютер", "computer");
+            Words.Add("стул", "chair");
+            Words.Add("гитара", "guitar");
+            Words.Add("телефон", "phone");
+            Words.Add("молоко", "milk");
+            Words.Add("класс", "class");
+            Words.Add("книжка", "booklet");
+            Words.Add("солнце", "sun");
+            Words.Add("парк", "park");
+            Words.Add("мяч", "ball");
+            Words.Add("флаг", "flag");
+            Words.Add("река", "river");
+            Words.Add("капуста", "cabbage");
+            Words.Add("банан", "banana");
+            Words.Add("дождь", "rain");
+            Words.Add("пианино", "piano");
+            Words.Add("зонт", "umbrella");
+            Words.Add("ноутбук", "laptop");
+            Words.Add("море", "sea");
+            Words.Add("музей", "museum");
+            Words.Add("звезда", "star");
+            Words.Add("птица", "bird");
+            Words.Add("космос", "space");
+            Words.Add("пароль", "password");
+            Words.Add("луна", "moon");
+            Words.Add("снег", "snow");
+            Words.Add("футбол", "football");
+            Words.Add("носок", "sock");
+            Words.Add("зебра", "zebra");
+            Words.Add("печенье", "cookie");
+            Words.Add("гора", "mountain");
+            Words.Add("планета", "planet");
+            Words.Add("цирк", "circus");
+            Words.Add("шапка", "hat");
+            Words.Add("змея", "snake");
+            Words.Add("шоколад", "chocolate");
+            Words.Add("поезд", "train");
+            Words.Add("песня", "song");
+            Words.Add("платье", "dress");
+            Words.Add("фильм", "movie");
+            Words.Add("ящик", "box");
+            Words.Add("замок", "castle");
+            Words.Add("кто", "who");
+            Words.Add("кора", "bark");
 
             // Заполнение англо-русского словаря на основе русско-английского
-            foreach (var entry in russianToEnglish)
+            foreach (var entry in Words)
             {
-                englishToRussian.Add(entry.Value, entry.Key);
+                TransletedWords.Add(entry.Value, entry.Key);
             }*/
 
             /*JsonSerializerOptions options = new JsonSerializerOptions
@@ -90,23 +91,36 @@ namespace laba1
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
 
-            string russianJson = JsonSerializer.Serialize(russianToEnglish, options);
-            string englishJson = JsonSerializer.Serialize(englishToRussian, options);
+            string russianJson = JsonSerializer.Serialize(Words, options);
+            string englishJson = JsonSerializer.Serialize(TransletedWords, options);
 
-            File.WriteAllText("russianToEnglish.json", russianJson, Encoding.UTF8);
-            File.WriteAllText("englishToRussian.json", englishJson, Encoding.UTF8);*/
+            File.WriteAllText("Words.json", russianJson, Encoding.UTF8);
+            File.WriteAllText("TransletedWords.json", englishJson, Encoding.UTF8);*/
 
         }
-        public static bool CheckingJsonFromFile(string fileName = "russianToEnglish.json")
+        public static bool CheckingJsonFromFile(string fileName = StandartFile)
         {
             string basePath = Application.StartupPath;
             string filePath = Path.Combine(basePath, fileName);
             FileName = fileName;
             JsonPath = filePath;
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
+           
 
             try
             {
-                string json = File.ReadAllText(filePath, Encoding.UTF8);
+                string[] fileNames = fileNameWithoutExtension.Split('-');
+
+                if (fileNames.Length != 2)
+                {
+                    FileName = StandartFile;
+                    throw new Exception("Неверный формат названия файла словаря (Пример: Русский-Английский)");
+                    return false;
+                }
+               
+                string reverseFileName = $"{fileNames[1]}-{fileNames[0]}.json";
+                string reverseFilePath = Path.Combine(basePath, reverseFileName);
+                string json = File.ReadAllText(JsonPath, Encoding.UTF8);
                 if (string.IsNullOrEmpty(json))
                 {
                     ShowErrorMessage("Файл не содержит информации", "Были найдены ошибки в структуре JSON");
@@ -125,11 +139,11 @@ namespace laba1
                     return false;
                 }
 
-                russianToEnglish = JsonSerializer.Deserialize<Dictionary<string, string>>(json, options);
+                Words = JsonSerializer.Deserialize<Dictionary<string, string>>(json, options);
 
                 // Дальнейшие действия с полученным словарем
 
-                CreateReverseTranslation(options, fileName);
+                CreateReverseTranslation(options, reverseFilePath);
             }
             catch (JsonException ex)
             {
@@ -151,14 +165,19 @@ namespace laba1
 
         public static bool UpdateJsonFiles()
         {
-            string basePath = Application.StartupPath;
-            string filePath = Path.Combine(basePath, FileName);
-            string reverseFileName = Path.GetFileNameWithoutExtension(FileName) + "_reverse.json";
-            string reverseFilePath = Path.Combine(basePath, reverseFileName);
-
             try
             {
-                string json = File.ReadAllText(filePath, Encoding.UTF8);
+                string basePath = Application.StartupPath;
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
+                string[] fileNames = fileNameWithoutExtension.Split('-');
+
+                if (fileNames.Length != 2)
+                {
+                    throw new Exception("Неверный формат названия файла словаря (Пример: Русский-Английский)");
+                }
+                string reverseFileName = $"{fileNames[1]}-{fileNames[0]}.json";
+                string reverseFilePath = Path.Combine(basePath, reverseFileName);
+                string json = File.ReadAllText(JsonPath, Encoding.UTF8);
                 if (string.IsNullOrEmpty(json))
                 {
                     ShowErrorMessage("Файл не содержит информации", "Были найдены ошибки в структуре JSON");
@@ -178,8 +197,8 @@ namespace laba1
 
                 UpdateReverseTranslation(options, FileName, reverseFilePath);
 
-                string updatedJson = JsonSerializer.Serialize(russianToEnglish, options);
-                File.WriteAllText(filePath, updatedJson, Encoding.UTF8);
+                string updatedJson = JsonSerializer.Serialize(Words, options);
+                File.WriteAllText(JsonPath, updatedJson, Encoding.UTF8);
             }
             catch (JsonException ex)
             {
@@ -212,23 +231,21 @@ namespace laba1
             return true;
         }
 
-        private static void CreateReverseTranslation(JsonSerializerOptions options, string fileName)
+        private static void CreateReverseTranslation(JsonSerializerOptions options, string reverseFilePath)
         {
-            englishToRussian = new Dictionary<string, string>();
-            foreach (KeyValuePair<string, string> pair in russianToEnglish)
+            TransletedWords = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> pair in Words)
             {
-                englishToRussian[pair.Value] = pair.Key;
+                TransletedWords[pair.Value] = pair.Key;
             }
 
-            string reverseJson = JsonSerializer.Serialize(englishToRussian, options);
-            string reverseFileName = Path.GetFileNameWithoutExtension(fileName) + "_reverse.json";
-            string reverseFilePath = Path.Combine(Application.StartupPath, reverseFileName);
+            string reverseJson = JsonSerializer.Serialize(TransletedWords, options);
             File.WriteAllText(reverseFilePath, reverseJson, Encoding.UTF8);
         }
 
         private static bool CheckEmptyKeysInDictionary()
         {
-            foreach (var pair in russianToEnglish)
+            foreach (var pair in Words)
             {
                 if (string.IsNullOrEmpty(pair.Key))
                 {
@@ -240,13 +257,13 @@ namespace laba1
 
         private static void UpdateReverseTranslation(JsonSerializerOptions options, string fileName, string reverseFilePath)
         {
-            englishToRussian = new Dictionary<string, string>();
-            foreach (KeyValuePair<string, string> pair in russianToEnglish)
+            TransletedWords = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> pair in Words)
             {
-                englishToRussian[pair.Value] = pair.Key;
+                TransletedWords[pair.Value] = pair.Key;
             }
 
-            string reverseJson = JsonSerializer.Serialize(englishToRussian, options);
+            string reverseJson = JsonSerializer.Serialize(TransletedWords, options);
             File.WriteAllText(reverseFilePath, reverseJson, Encoding.UTF8);
         }
 
@@ -254,6 +271,17 @@ namespace laba1
         {
             MessageBoxButtons buttons = MessageBoxButtons.OK;
             MessageBox.Show(message, caption, buttons);
+        }
+        public static Task ChangeLanguage(bool stateOfLanguage)
+        {
+            if (!stateOfLanguage)
+            {
+                Dictionary<string, string> temp = new Dictionary<string, string>();
+                temp = TransletedWords;
+                TransletedWords = Words;
+                Words = temp;
+            }
+            return Task.CompletedTask;
         }
 
     }

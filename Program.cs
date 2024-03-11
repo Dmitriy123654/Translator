@@ -2,6 +2,8 @@ namespace laba1
 {
     internal static class Program
     {
+        public static Form1 fm1 = new Form1();
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -13,7 +15,7 @@ namespace laba1
             if (!DataStorage.CheckingJsonFromFile())
                 return;
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            Application.Run(fm1);
         }
     }
 }

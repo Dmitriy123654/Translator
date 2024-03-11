@@ -43,7 +43,8 @@ namespace laba1
                 newInputText += word;
                 newInputText+= "\r\n";
             }
-            this.inputTextBox.Text = newInputText; 
+            this.inputTextBox.Text = newInputText;
+            stateOfLanguage = false;
             
         }
 
@@ -130,7 +131,7 @@ namespace laba1
                 editDialog.Controls.Add(wordList);
 
                 // Заполнение списка словами и их переводами
-                foreach (var pair in DataStorage.russianToEnglish)
+                foreach (var pair in DataStorage.Words)
                 {
                     wordList.Items.Add($"{pair.Key} - {pair.Value}");
                 }
@@ -245,11 +246,11 @@ namespace laba1
                             }
 
                             // Редактирование слова в словаре
-                            if (DataStorage.russianToEnglish.ContainsKey(word))
+                            if (DataStorage.Words.ContainsKey(word))
                             {
-                                string translation = DataStorage.russianToEnglish[word];
-                                DataStorage.russianToEnglish.Remove(word);
-                                DataStorage.russianToEnglish[editedWord] = translation;
+                                string translation = DataStorage.Words[word];
+                                DataStorage.Words.Remove(word);
+                                DataStorage.Words[editedWord] = translation;
                             }
 
                             // Обновление списка слов
@@ -272,9 +273,9 @@ namespace laba1
                     string word = parts[0];
 
                     // Удаление слова из словаря
-                    if (DataStorage.russianToEnglish.ContainsKey(word))
+                    if (DataStorage.Words.ContainsKey(word))
                     {
-                        DataStorage.russianToEnglish.Remove(word);
+                        DataStorage.Words.Remove(word);
                     }
 
                     // Обновление списка слов
@@ -369,9 +370,9 @@ namespace laba1
                             }
 
                             // Добавление нового слова в словарь
-                            if (!DataStorage.russianToEnglish.ContainsKey(newWord))
+                            if (!DataStorage.Words.ContainsKey(newWord))
                             {
-                                DataStorage.russianToEnglish[newWord] = newTranslation;
+                                DataStorage.Words[newWord] = newTranslation;
                             }
 
                             // Обновление списка слов
@@ -390,5 +391,15 @@ namespace laba1
             OutputListBox.Items.Clear();
             DataStorage.UpdateJsonFiles();
         }
+
+
+
+        public void UpdateLanguageLabels()
+        {
+            this.inputLanguageLabel.Text = inputText;
+            this.OutputLanguageLabel.Text = outputText;
+
+        }
     }
+
 }
