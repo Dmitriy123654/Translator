@@ -19,7 +19,7 @@ namespace laba1
             {
                 InitializeAsync();
             }*/
-            CheckingJsonFromFile();
+            // CheckingJsonFromFile();
         }
         private async Task InitializeAsync()
         {
@@ -100,6 +100,7 @@ namespace laba1
         }
         public static bool CheckingJsonFromFile(string fileName = StandartFile)
         {
+
             string basePath = Application.StartupPath;
             string filePath = Path.Combine(basePath, fileName);
             FileName = fileName;

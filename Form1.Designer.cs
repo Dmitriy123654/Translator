@@ -177,6 +177,7 @@ namespace laba1
 
         private void InitializeComponent()
         {
+           
             this.title = new System.Windows.Forms.Label();
             this.inputTextBox = new System.Windows.Forms.TextBox();
             this.inputLanguageLabel = new System.Windows.Forms.Label();
@@ -307,7 +308,73 @@ namespace laba1
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
+            if (!DataStorage.CheckingJsonFromFile())
+            {
+                using (var dialog = new Form())
+                {
+                    dialog.Text = "Выберите язык ввода и перевода";
+                    dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    dialog.StartPosition = FormStartPosition.CenterScreen;
 
+                    Label inputLabel = new Label();
+                    inputLabel.Text = "Язык ввода:";
+                    inputLabel.Location = new System.Drawing.Point(12, 15);
+
+                    TextBox inputTextBox = new TextBox();
+                    inputTextBox.Location = new System.Drawing.Point(120, 12);
+
+                    Label translationLabel = new Label();
+                    translationLabel.Text = "Язык перевода:";
+                    translationLabel.Location = new System.Drawing.Point(12, 45);
+
+                    TextBox translationTextBox = new TextBox();
+                    translationTextBox.Location = new System.Drawing.Point(120, 42);
+
+                    Button okButton = new Button();
+                    okButton.Text = "ОК";
+                    okButton.DialogResult = DialogResult.OK;
+                    okButton.Location = new System.Drawing.Point(50, 80);
+
+                    Button cancelButton = new Button();
+                    cancelButton.Text = "Отмена";
+                    cancelButton.DialogResult = DialogResult.Cancel;
+                    cancelButton.Location = new System.Drawing.Point(130, 80);
+
+                    okButton.Click += (sender, e) =>
+                    {
+                        string inputLanguage = inputTextBox.Text;
+                        string translationLanguage = translationTextBox.Text;
+
+                        string fileName = $"{inputLanguage}-{translationLanguage}.json";
+                        // Создание и сохранение JSON файла с указанным именем
+                        File.WriteAllText(fileName, "{}");
+                        this.inputLanguageLabel.Text = inputLanguage;
+                        this.OutputLanguageLabel.Text = translationLanguage;
+                        DataStorage.CheckingJsonFromFile(fileName);
+
+                        dialog.DialogResult = DialogResult.OK;
+                    };
+
+                    dialog.AcceptButton = okButton;
+                    dialog.CancelButton = cancelButton;
+                    dialog.Controls.AddRange(new Control[]
+                    {
+                        inputLabel,
+                        inputTextBox,
+                        translationLabel,
+                        translationTextBox,
+                        okButton,
+                        cancelButton
+                    });
+
+                    if (dialog.ShowDialog() == DialogResult.Cancel)
+                    {
+                        this.Close();
+                    }
+                }
+
+               
+            }
         }
 
         static List<string> FindPossibleErrors(string word, Dictionary<string, string> dictionaryWords)

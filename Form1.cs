@@ -271,6 +271,7 @@ namespace laba1
 
                     string[] parts = selectedWord.Split(new string[] { "-" }, StringSplitOptions.None);
                     string word = parts[0];
+                    word = word.TrimEnd();
 
                     // Удаление слова из словаря
                     if (DataStorage.Words.ContainsKey(word))
